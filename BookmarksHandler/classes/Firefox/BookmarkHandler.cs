@@ -19,11 +19,11 @@ namespace BookmarksHandler.Firefox
             request = new DatabaseRequest(ini.bookmarkDatabasePath, Settings.BookmarkFolderName);
         }
 
-        internal void AddBookmark(string name, string url) =>
-            request.AddBookmark(url, name);
+        internal void AddBookmark(Bookmark bookmark) =>
+            request.AddBookmark(bookmark.Url, bookmark.Name);
 
-        internal void DeleteBookmark(string name) =>
-            request.DeleteBookmark(name);
+        internal void DeleteBookmark(Bookmark bookmark) =>
+            request.DeleteBookmark(bookmark.Name);
 
         internal bool BookmarkExist(string name) =>
             request.BookmarkExist(name);

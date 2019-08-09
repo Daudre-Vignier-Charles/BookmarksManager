@@ -8,5 +8,5 @@
 
 <bookmarks>
   <bookmark name="Yandex" url="https://yandex.com" ie="true" chrome="true" firefox="true"/>
-  <bookmark name="Yandex.Mail" url="https://mail.yandex.ru" ie="true" chrome="true" firefox="true"/>
+  <bookmark name="Yandex.Mail" url="https://mail.yandex.ru" ie="false" chrome="true" firefox="true"/>
 </bookmarks>

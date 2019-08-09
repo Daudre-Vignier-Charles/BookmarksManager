@@ -16,7 +16,7 @@ namespace BookmarksHandler.BookmarkBase
             bookmarksBookmark[] bookmarkList;
             Dictionary<string, Bookmark> ret = new Dictionary<string, Bookmark>();
             XmlSerializer serializer = new XmlSerializer(typeof(bookmarks));
-            using (FileStream stream = new FileStream(@"C:\Users\cdaudre-vignier\source\repos\BookmarksHandler\BookmarksHandler\bookmarkList.xml", FileMode.Open))
+            using (FileStream stream = new FileStream(xmlFile, FileMode.Open))
             {
                 bookmarks = (bookmarks)serializer.Deserialize(stream);
             }

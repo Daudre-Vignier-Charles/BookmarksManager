@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("BookmarksHandler")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Charles Daudré-Vignier")]
 [assembly: AssemblyProduct("BookmarksHandler")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright Charles Daudré-Vignier ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

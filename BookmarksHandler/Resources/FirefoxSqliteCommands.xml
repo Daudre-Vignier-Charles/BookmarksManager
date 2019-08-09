@@ -13,7 +13,7 @@
     INSERT INTO moz_bookmarks (type, parent, title, guid, dateAdded, lastModified, fk) VALUES (1, "{0}", "{1}", "{2}", {3}, {4}, {5});
   </addBookmark>
   <deleteBookmark>
-    DELETE FROM moz_bookmarks WHERE title={0} AND type=2 AND parent={1};
+    DELETE FROM moz_bookmarks WHERE title="{0}" AND type=1 AND parent={1};
   </deleteBookmark>
   <bookmarkExist>
     SELECT title FROM moz_bookmarks WHERE title="{0}" AND type={1} AND parent={2};
