@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using BookmarksHandler.BookmarkBase;
+using BookmarksManager.BookmarkBase;
 
-namespace BookmarksHandler.IE
+namespace BookmarksManager.IE
 {
     internal static class BookmarkHandler
     {

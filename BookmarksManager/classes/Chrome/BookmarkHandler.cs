@@ -4,9 +4,9 @@ using System.Windows;
 using System.Configuration;
 using System.Text;
 using Newtonsoft.Json;
-using BookmarksHandler.BookmarkBase;
+using BookmarksManager.BookmarkBase;
 
-namespace BookmarksHandler.Chrome
+namespace BookmarksManager.Chrome
 {
     internal class BookmarkHandler
     {

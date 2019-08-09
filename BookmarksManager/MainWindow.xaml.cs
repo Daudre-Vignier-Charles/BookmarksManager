@@ -3,11 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using BookmarksHandler.BookmarkBase;
-using ieBookmarkHandler = BookmarksHandler.IE.BookmarkHandler;
+using BookmarksManager.BookmarkBase;
+using ieBookmarkHandler = BookmarksManager.IE.BookmarkHandler;
 
 
-namespace BookmarksHandler
+namespace BookmarksManager
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml

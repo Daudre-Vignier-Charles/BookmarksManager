@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace BookmarksHandler.BookmarkBase
+namespace BookmarksManager.BookmarkBase
 {
     public class Bookmark
     {

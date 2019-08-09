@@ -14,7 +14,7 @@ using System.Xml.Serialization;
 // Ce code source a été automatiquement généré par xsd, Version=4.7.3081.0.
 // 
 
-namespace BookmarksHandler.BookmarkBase
+namespace BookmarksManager.BookmarkBase
 {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.7.3081.0")]

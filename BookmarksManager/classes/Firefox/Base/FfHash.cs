@@ -1,4 +1,4 @@
-﻿namespace BookmarksHandler.Firefox.Base
+﻿namespace BookmarksManager.Firefox.Base
 {
     /// <summary>
     /// Firefox 50+ database url hash

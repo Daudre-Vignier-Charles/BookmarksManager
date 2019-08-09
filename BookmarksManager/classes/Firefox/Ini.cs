@@ -3,7 +3,7 @@ using System.IO;
 using System.Configuration;
 using MadMilkman.Ini;
 
-namespace BookmarksHandler.Firefox
+namespace BookmarksManager.Firefox
 {
     enum FirefoxVersion
     {
@@ -22,7 +22,7 @@ namespace BookmarksHandler.Firefox
             if (!File.Exists(firefoxIniFile))
                 throw new FileNotFoundException("File " + firefoxIniFile + " not found");
 
-            string profileName = GetProfileName(BookmarksHandler.Settings.firefoxVersion);
+            string profileName = GetProfileName(BookmarksManager.Settings.firefoxVersion);
             if (profileName == null)
                 throw new Exception("Error while parsing ini file " + firefoxIniFile);
             bookmarkDatabasePath = GetBookmarkFilePath(profileName);

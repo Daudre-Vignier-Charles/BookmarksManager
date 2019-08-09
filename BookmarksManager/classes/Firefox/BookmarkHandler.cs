@@ -4,10 +4,10 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookmarksHandler.BookmarkBase;
-using BookmarksHandler.Firefox.Base;
+using BookmarksManager.BookmarkBase;
+using BookmarksManager.Firefox.Base;
 
-namespace BookmarksHandler.Firefox
+namespace BookmarksManager.Firefox
 {
     internal class BookmarkHandler
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BookmarksHandler.Firefox.Base
+namespace BookmarksManager.Firefox.Base
 {
     internal static class FfGuid
     {

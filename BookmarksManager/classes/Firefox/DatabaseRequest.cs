@@ -2,10 +2,10 @@
 using System.Xml.Linq;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using BookmarksHandler.Firefox.Base;
+using BookmarksManager.Firefox.Base;
 using System.Collections;
 
-namespace BookmarksHandler.Firefox
+namespace BookmarksManager.Firefox
 {
     internal class DatabaseRequest
     {
@@ -26,7 +26,7 @@ namespace BookmarksHandler.Firefox
             command = new SQLiteCommand() { Connection = databaseConnection };
 
             // Setup commandRepository
-            foreach (XElement element in XElement.Parse(BookmarksHandler.Properties.Resources.FirefoxSqliteCommands).Elements())
+            foreach (XElement element in XElement.Parse(BookmarksManager.Properties.Resources.FirefoxSqliteCommands).Elements())
                 commandRepository.Add(element.Name.LocalName, element.Value);
 
             // Check if bookmark folder is ok and get Id

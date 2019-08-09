@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using BookmarksHandler.Firefox;
+using BookmarksManager.Firefox;
 
-namespace BookmarksHandler
+namespace BookmarksManager
 {
     internal static class Settings
     {

@@ -2,9 +2,9 @@
 using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using ieBookmarkHandler = BookmarksHandler.IE.BookmarkHandler;
+using ieBookmarkHandler = BookmarksManager.IE.BookmarkHandler;
 
-namespace BookmarksHandler.BookmarkBase
+namespace BookmarksManager.BookmarkBase
 {
     internal class Bookmarks
     {
