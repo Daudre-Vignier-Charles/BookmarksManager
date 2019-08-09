@@ -1,0 +1,24 @@
+{
+	"checksum": "",
+	"roots": {
+		"bookmark_bar": {
+			"children": [],
+			"id": "1",
+			"name": "Barre de favoris",
+			"type": "folder"
+		},
+		"other": {
+			"children": [],
+			"id": "2",
+			"name": "Autres favoris",
+			"type": "folder"
+		},
+		"synced": {
+			"children": [],
+			"id": "3",
+			"name": "Favoris sur mobile",
+			"type": "folder"
+		}
+	},
+	"version": 1
+}

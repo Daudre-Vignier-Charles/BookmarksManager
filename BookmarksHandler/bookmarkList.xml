@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    attributes name and url are mandatory
+    attributes ie, firefox and chrome are optional, default is true
+    if any of attributes ie, firefox or chrome is false, bookmark is disabled for browser X into ui
+-->
+
+<bookmarks>
+  <bookmark name="Yandex" url="https://yandex.com" ie="true" chrome="true" firefox="true"/>
+  <bookmark name="Yandex.Mail" url="https://mail.yandex.ru" ie="true" chrome="true" firefox="true"/>
+</bookmarks>

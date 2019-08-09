@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <!-- fk -->
+  <addFk>
+    INSERT INTO moz_places (url, title, guid, url_hash) VALUES ("{0}", "{1}", "{2}", "{3}");
+  </addFk>
+  <getFkId>
+    SELECT id FROM moz_places WHERE title="{0}" AND url="{1}";
+  </getFkId>
+
+  <!-- bookmark -->
+  <addBookmark>
+    INSERT INTO moz_bookmarks (type, parent, title, guid, dateAdded, lastModified, fk) VALUES (1, "{0}", "{1}", "{2}", {3}, {4}, {5});
+  </addBookmark>
+  <deleteBookmark>
+    DELETE FROM moz_bookmarks WHERE title={0} AND type=2 AND parent={1};
+  </deleteBookmark>
+  <bookmarkExist>
+    SELECT title FROM moz_bookmarks WHERE title="{0}" AND type={1} AND parent={2};
+  </bookmarkExist>
+
+  <!-- bookmark folder -->
+  <addBookmarkFolder>
+    INSERT INTO moz_bookmarks (type, parent, title, guid, dateAdded, lastModified) VALUES (2, 3, "{0}", "{1}", {2}, {3});
+  </addBookmarkFolder>
+  <getBookmarkFolderId>
+    SELECT id FROM moz_bookmarks WHERE title="{0}" AND type=2 AND parent=3;
+  </getBookmarkFolderId>
+</root>
