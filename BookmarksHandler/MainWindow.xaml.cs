@@ -69,7 +69,6 @@ namespace BookmarksHandler
                 CheckBox FirefoxCheckBox = CheckBoxBuilder(Browser.Firefox, bookmark);
                 FirefoxStackPanel.Children.Add(new Separator());
                 FirefoxStackPanel.Children.Add(FirefoxCheckBox);
-
             }
         }
 
