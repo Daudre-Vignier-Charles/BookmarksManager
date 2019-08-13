@@ -39,7 +39,7 @@ namespace BookmarksManager
         {
             InitializeComponent();
 
-            if (!CheckRun()) //Warning debug
+            if (CheckRun())
             {
                 this.Close();
                 return;
