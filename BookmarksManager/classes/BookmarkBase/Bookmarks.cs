@@ -2,7 +2,6 @@
 using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using ieBookmarkHandler = BookmarksManager.IE.BookmarkHandler;
 
 namespace BookmarksManager.BookmarkBase
 {
@@ -10,7 +9,7 @@ namespace BookmarksManager.BookmarkBase
     {
         private static string xmlFile = "bookmarkList.xml";
 
-        public Dictionary<string, Bookmark> Deserialize(Chrome.BookmarkHandler chromeBookmarkHandler, Firefox.BookmarkHandler firefoxBookmarkHandler)
+        public Dictionary<string, Bookmark> Deserialize(Chrome.BookmarkHandler chromeBookmarkHandler, Firefox.BookmarkHandler firefoxBookmarkHandler, IE.BookmarkHandler ieBookmarkHandler)
         {
             bookmarks bookmarks = null;
             bookmarksBookmark[] bookmarkList;
@@ -27,13 +26,14 @@ namespace BookmarksManager.BookmarkBase
                 {
                     Name = bookmark.name,
                     Url = bookmark.url,
-                    ChromeExist = chromeBookmarkHandler.BookmarkExist(bookmark.name),
-                    FirefoxExist = firefoxBookmarkHandler.BookmarkExist(bookmark.name),
-                    IEExist = ieBookmarkHandler.BookmarkExist(bookmark.name)
-                };  
-                ret[bookmark.name].Chrome = (bookmark.chrome || !bookmark.chromeSpecified) ? true : false;
-                ret[bookmark.name].Firefox = (bookmark.firefox || !bookmark.firefoxSpecified) ? true : false;
-                ret[bookmark.name].IE = (bookmark.ie || !bookmark.ieSpecified) ? true : false;
+                    ChromeExist = chromeBookmarkHandler?.BookmarkExist(bookmark.name) ?? false,
+                    FirefoxExist = firefoxBookmarkHandler?.BookmarkExist(bookmark.name) ?? false,
+                    IEExist = ieBookmarkHandler?.BookmarkExist(bookmark.name) ?? false
+
+                };
+                ret[bookmark.name].Chrome = (bookmark.chrome || !bookmark.chromeSpecified) && chromeBookmarkHandler != null ? true : false;
+                ret[bookmark.name].Firefox = (bookmark.firefox || !bookmark.firefoxSpecified)  && firefoxBookmarkHandler != null ? true : false;
+                ret[bookmark.name].IE = (bookmark.ie || !bookmark.ieSpecified) && ieBookmarkHandler != null ? true : false;
             }
             return ret;
         }

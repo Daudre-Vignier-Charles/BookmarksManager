@@ -1,4 +1,6 @@
-﻿namespace BookmarksManager.BookmarkBase
+﻿using System.Xml.Serialization;
+
+namespace BookmarksManager.BookmarkBase
 {
     public class Bookmark
     {

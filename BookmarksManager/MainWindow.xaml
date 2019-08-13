@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookmarksManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Closing="MainWindow_Closing">
+        Title="MainWindow" Height="450" Width="800" Closing="MainWindow_Closing" MinWidth="360" MinHeight="300">
     <Grid>
         <ScrollViewer>
             <Grid x:Name="mainGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="225*"/>
-                    <ColumnDefinition Width="100*"/>
-                    <ColumnDefinition Width="100*"/>
-                    <ColumnDefinition Width="100*"/>
+                    <ColumnDefinition MinWidth="80"/>
+                    <ColumnDefinition Width="61"/>
+                    <ColumnDefinition Width="61"/>
+                    <ColumnDefinition Width="61"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel x:Name="NameStackPanel">
                     <Button x:Name="Copyright" Content="©" Background="#FFE8ECEC" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Height="40" BorderBrush="{x:Null}" Foreground="#FF1630D4" Click="Copyright_Click"/>

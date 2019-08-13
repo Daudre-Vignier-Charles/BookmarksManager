@@ -1,14 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
-using System.Configuration;
 using System.Text;
 using Newtonsoft.Json;
 using BookmarksManager.BookmarkBase;
 
 namespace BookmarksManager.Chrome
 {
-    internal class BookmarkHandler
+    internal class BookmarkHandler : BookmarkHandlerBase
     {
 
         private readonly string BookmarkFolderName = Settings.BookmarkFolderName;
@@ -23,52 +22,59 @@ namespace BookmarksManager.Chrome
 
         public BookmarkHandler()
         {
-            if (!File.Exists(BookmarkFilePath))
+            try
             {
-                MessageBox.Show("Chrome bookmark file not found, create new file.",
-                    "Info",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-                File.WriteAllText(BookmarkFilePath, Encoding.Default.GetString(Properties.Resources.ChromeBookmarkOrigin));
-            }
-
-            bool exist = false;
-            ChromeBookmarks = Deserialize();
-            foreach (Newtonsoft.Json.Linq.JObject jsonObject in ChromeBookmarks["roots"]["bookmark_bar"]["children"])
-            {
-                if (jsonObject["name"].ToString() == BookmarkFolderName)
+                if (!File.Exists(BookmarkFilePath))
                 {
-                    exist = true;
+                    MessageBox.Show("Chrome bookmark file not found, create new file.",
+                        "Info",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    File.WriteAllText(BookmarkFilePath, Encoding.Default.GetString(Properties.Resources.ChromeBookmarkOrigin));
+                }
+
+                bool exist = false;
+                ChromeBookmarks = Deserialize();
+                foreach (Newtonsoft.Json.Linq.JObject jsonObject in ChromeBookmarks["roots"]["bookmark_bar"]["children"])
+                {
+                    if (jsonObject["name"].ToString() == BookmarkFolderName)
+                    {
+                        exist = true;
+                        Childrens = (Newtonsoft.Json.Linq.JArray)jsonObject["children"];
+                    }
+                }
+                if (!exist)
+                {
+                    Newtonsoft.Json.Linq.JArray jsonArray =
+                        (Newtonsoft.Json.Linq.JArray)ChromeBookmarks["roots"]["bookmark_bar"]["children"]; ;
+                    Newtonsoft.Json.Linq.JObject jsonObject =
+                        Newtonsoft.Json.Linq.JObject.Parse(
+                            String.Format("{{\"children\": [  ], \"name\": \"{0}\", \"type\": \"folder\" }}", BookmarkFolderName));
+                    jsonArray.Add(jsonObject);
                     Childrens = (Newtonsoft.Json.Linq.JArray)jsonObject["children"];
                 }
             }
-            if (!exist)
+            catch (Exception e)
             {
-                Newtonsoft.Json.Linq.JArray jsonArray =
-                    (Newtonsoft.Json.Linq.JArray)ChromeBookmarks["roots"]["bookmark_bar"]["children"]; ;
-                Newtonsoft.Json.Linq.JObject jsonObject =
-                    Newtonsoft.Json.Linq.JObject.Parse(
-                        String.Format("{{\"children\": [  ], \"name\": \"{0}\", \"type\": \"folder\" }}", BookmarkFolderName));
-                jsonArray.Add(jsonObject);
-                Childrens = (Newtonsoft.Json.Linq.JArray)jsonObject["children"];
+                throw new BookmarkHandlerInitializationException(Browser.Chrome, e.Message);
             }
         }
 
         private static Newtonsoft.Json.Linq.JObject Deserialize() =>
             (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(System.IO.File.ReadAllText(BookmarkFilePath));
 
-        public void Apply()
+        internal void Apply()
         {
             File.WriteAllText(BookmarkFilePath, JsonConvert.SerializeObject(ChromeBookmarks, Formatting.Indented));
         }
 
-        public void AddBookmark(Bookmark bookmark)
+        internal override void AddBookmark(Bookmark bookmark)
         {
             Childrens.Add(Newtonsoft.Json.Linq.JObject.Parse(
                 String.Format("{{\"name\": \"{0}\", \"type\": \"url\", \"url\": \"{1}\"}}", bookmark.Name, bookmark.Url)));
         }
 
-        public void RemoveBookmark(Bookmark bookmark)
+        internal override void DeleteBookmark(Bookmark bookmark)
         {
             foreach (Newtonsoft.Json.Linq.JObject Child in Childrens)
             {
@@ -80,7 +86,7 @@ namespace BookmarksManager.Chrome
             }
         }
 
-        public bool BookmarkExist(string bookmarkName)
+        internal override bool BookmarkExist(string bookmarkName)
         {
             foreach (Newtonsoft.Json.Linq.JObject jObject in Childrens)
             {

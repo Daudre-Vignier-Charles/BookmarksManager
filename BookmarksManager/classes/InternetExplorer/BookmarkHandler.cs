@@ -4,11 +4,11 @@ using BookmarksManager.BookmarkBase;
 
 namespace BookmarksManager.IE
 {
-    internal static class BookmarkHandler
+    internal class BookmarkHandler : BookmarkHandlerBase
     {
-        private static string BookmarkPath = Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
+        private static readonly string BookmarkPath = Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
 
-        internal static void AddBookmark(Bookmark bookmark)
+        internal override void AddBookmark(Bookmark bookmark)
         {
             using (StreamWriter writer = new StreamWriter(BookmarkPath + "\\" + bookmark.Name + ".url"))
             {
@@ -18,10 +18,10 @@ namespace BookmarksManager.IE
             }
         }
 
-        internal static void RemoveBookmark(string bookmarkName) =>
-            File.Delete(BookmarkHandler.FullLoc(bookmarkName));
+        internal override void DeleteBookmark(Bookmark bookmark) =>
+            File.Delete(BookmarkHandler.FullLoc(bookmark.Name));
 
-        internal static bool BookmarkExist(string bookmarkName) =>
+        internal override bool BookmarkExist(string bookmarkName) =>
             File.Exists(FullLoc(bookmarkName));
 
         internal static string FullLoc(string bookmarkName) =>
