@@ -14,3 +14,5 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 Sources can be found at https://github.com/Daudre-Vignier-Charles/BookmarksManager
+
+Program icon made by Smashicons from www.flaticon.com is licensed by CC 3.0 BY.

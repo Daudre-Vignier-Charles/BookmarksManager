@@ -141,8 +141,12 @@
     <Content Include="bookmarkList.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="COPYRIGHT.txt" />
-    <Resource Include="LICENSE.txt" />
+    <EmbeddedResource Include="COPYRIGHT.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Resource Include="favicon.ico" />
     <Content Include="Resources\FirefoxSqliteCommands.xml" />
   </ItemGroup>
@@ -156,7 +160,7 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>; Move all assemblies and related files to lib folder
-ROBOCOPY "$(TargetDir) " "$(TargetDir)lib\ " /XF *.exe *exe.config *.manifest  bookmarkList.xml /XD lib logs data /E /IS /MOVE
+ROBOCOPY "$(TargetDir) " "$(TargetDir)lib\ " /XF *.exe *exe.config *.manifest  bookmarkList.xml LICENSE.txt COPYRIGHT.txt /XD lib logs data /E /IS /MOVE
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
 </Project>
