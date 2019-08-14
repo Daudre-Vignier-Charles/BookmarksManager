@@ -3,6 +3,19 @@ using System.Diagnostics;
 
 namespace BookmarksManager
 {
+    /// <summary>
+    /// Each of the managed browsers
+    /// </summary>
+    internal enum Browser
+    {
+        IE,
+        Chrome,
+        Firefox
+    }
+
+    /// <summary>
+    /// Used to check if browser is running.
+    /// </summary>
     internal class Browsers
     {
         internal static readonly Dictionary<Browser, string> browsersExe = new Dictionary<Browser, string>()

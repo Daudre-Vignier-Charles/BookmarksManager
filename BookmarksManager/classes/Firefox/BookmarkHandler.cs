@@ -3,6 +3,9 @@ using BookmarksManager.BookmarkBase;
 
 namespace BookmarksManager.Firefox
 {
+    /// <summary>
+    /// Implement BookmarkHandler using DatabaseRequest
+    /// </summary>
     internal class BookmarkHandler : BookmarkHandlerBase
     {
         DatabaseRequest request;

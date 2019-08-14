@@ -7,6 +7,10 @@ using BookmarksManager.BookmarkBase;
 
 namespace BookmarksManager.Chrome
 {
+    /// <summary>
+    /// Chrome bookmarks are stored into a json file.
+    /// Apply() method must be called for applying change into Chrome's bookmarks.
+    /// </summary>
     internal class BookmarkHandler : BookmarkHandlerBase
     {
 
@@ -60,9 +64,17 @@ namespace BookmarksManager.Chrome
             }
         }
 
+        /// <summary>
+        /// Return list of existing bookmarks
+        /// </summary>
+        /// <returns></returns>
         private static Newtonsoft.Json.Linq.JObject Deserialize() =>
             (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(System.IO.File.ReadAllText(BookmarkFilePath));
 
+
+        /// <summary>
+        /// Save change into Chrome's bookmarks.
+        /// </summary>
         internal void Apply() =>
             File.WriteAllText(BookmarkFilePath, JsonConvert.SerializeObject(ChromeBookmarks, Formatting.Indented));
 

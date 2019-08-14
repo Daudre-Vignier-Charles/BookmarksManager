@@ -1,5 +1,8 @@
 ﻿namespace BookmarksManager.BookmarkBase
 {
+    /// <summary>
+    /// Class representing a bookmark
+    /// </summary>
     public class Bookmark
     {
         public string Name;

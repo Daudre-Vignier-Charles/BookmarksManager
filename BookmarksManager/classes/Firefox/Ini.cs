@@ -5,12 +5,22 @@ using MadMilkman.Ini;
 
 namespace BookmarksManager.Firefox
 {
+
+    /// <summary>
+    /// There are two versions (update channels) of Firefox : ESR (long term support) and Release (standard).
+    /// BookmarksManager use the user defined version into config file.
+    /// </summary>
     enum FirefoxVersion
     {
         release,
         esr
     }
 
+
+    /// <summary>
+    /// Ini is used to get the Firefox database path.
+    /// Once class is initiated, database path is stored into bookmarkDatabasePath property.
+    /// </summary>
     internal class Ini
     {
         private string firefoxIniFile;
@@ -25,15 +35,25 @@ namespace BookmarksManager.Firefox
             string profileName = GetProfileName(BookmarksManager.Settings.firefoxVersion);
             if (profileName == null)
                 throw new Exception("Error while parsing ini file " + firefoxIniFile);
-            bookmarkDatabasePath = GetBookmarkFilePath(profileName);
+            bookmarkDatabasePath = GetDatabasePath(profileName);
             if (!File.Exists(bookmarkDatabasePath))
                 throw new FileNotFoundException("File " + bookmarkDatabasePath + " not found");
 
         }
 
-        private string GetBookmarkFilePath(string profileName) =>
+        /// <summary>
+        /// Get database path from profile
+        /// </summary>
+        /// <param name="profileName"></param>
+        /// <returns></returns>
+        private string GetDatabasePath(string profileName) =>
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Mozilla\Firefox\Profiles\" + profileName + @"\places.sqlite";
 
+        /// <summary>
+        /// Get profile name from ini file.
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
         private string GetProfileName(FirefoxVersion version)
         {
             IniFile ini = new IniFile();

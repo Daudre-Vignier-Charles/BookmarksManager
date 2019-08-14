@@ -7,18 +7,12 @@ using BookmarksManager.BookmarkBase;
 
 namespace BookmarksManager
 {
-
-    internal enum Browser
-    {
-        IE,
-        Chrome,
-        Firefox
-    }
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region DECLARE
         bool applyOnExit = true;
 
         Bookmarks bookmarks = new Bookmarks();
@@ -33,11 +27,11 @@ namespace BookmarksManager
         Firefox.BookmarkHandler firefoxBookmarkHandler;
         Chrome.BookmarkHandler chromeBookmarkHandler;
         IE.BookmarkHandler ieBookmarkHandler;
+        #endregion DECLARE
 
         public MainWindow()
         {
             InitializeComponent();
-
 
             #region CHECK
             // Check running browsers
@@ -113,11 +107,8 @@ namespace BookmarksManager
                 Tag = bookmark.Value.Name,
                 Height = 20,
                 Margin = new Thickness(0, 6, 0, 0),
+                Opacity = initializationSuccessful[browser] ? 100 : 0
             };
-            if (!initializationSuccessful[browser])
-            {
-                checkBox.Opacity = 0;
-            }
             switch (browser)
             {
                 case Browser.Chrome:
@@ -142,53 +133,31 @@ namespace BookmarksManager
             return checkBox;
         }
 
-        private void IECheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            ieBookmarkHandler.AddBookmark(allBookmarks[cb.Tag.ToString()]);
-        }
+        private void IECheckBox_Checked(object sender, RoutedEventArgs e) =>
+            ieBookmarkHandler.AddBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
-        private void IECheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            ieBookmarkHandler.DeleteBookmark(allBookmarks[cb.Tag.ToString()]);
-        }
+        private void IECheckBox_Unchecked(object sender, RoutedEventArgs e) =>
+            ieBookmarkHandler.DeleteBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
-        private void ChromeCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            chromeBookmarkHandler.AddBookmark(allBookmarks[cb.Tag.ToString()]);
-        }
+        private void ChromeCheckBox_Checked(object sender, RoutedEventArgs e) =>
+            chromeBookmarkHandler.AddBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
-        private void ChromeCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            chromeBookmarkHandler.DeleteBookmark(allBookmarks[cb.Tag.ToString()]);
-        }
+        private void ChromeCheckBox_Unchecked(object sender, RoutedEventArgs e) =>
+            chromeBookmarkHandler.DeleteBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
-        private void FirefoxCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            firefoxBookmarkHandler.AddBookmark(allBookmarks[cb.Tag.ToString()]);
-        }
+        private void FirefoxCheckBox_Checked(object sender, RoutedEventArgs e) =>
+            firefoxBookmarkHandler.AddBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
-        private void FirefoxCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            firefoxBookmarkHandler.DeleteBookmark(allBookmarks[cb.Tag.ToString()]);
-        }
+        private void FirefoxCheckBox_Unchecked(object sender, RoutedEventArgs e) =>
+            firefoxBookmarkHandler.DeleteBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
-        private void Copyright_Click(object sender, RoutedEventArgs e)
-        {
+        private void Copyright_Click(object sender, RoutedEventArgs e) =>
             MessageBox.Show(Properties.Resources.Copyright, "Copyright", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (applyOnExit)
-            {
                 chromeBookmarkHandler.Apply();
-            }
         }
 
         private bool CheckRun(Browser browser)

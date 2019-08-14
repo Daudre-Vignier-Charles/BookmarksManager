@@ -95,13 +95,10 @@
     <Compile Include="classes\BookmarkBase\bookmarkList.cs" />
     <Compile Include="classes\BookmarkBase\BookmarkHandlerBase.cs" />
     <Compile Include="classes\BookmarkBase\Bookmarks.cs" />
-    <Compile Include="classes\checkRun.cs" />
+    <Compile Include="classes\BrowerBase.cs" />
     <Compile Include="classes\Settings.cs" />
     <Compile Include="classes\BookmarkBase\Bookmark.cs" />
     <Compile Include="classes\Chrome\BookmarkHandler.cs" />
-    <Compile Include="classes\Firefox\Base\FfHash.cs" />
-    <Compile Include="classes\Firefox\Base\FfGuid.cs" />
-    <Compile Include="classes\Firefox\Base\FfTimestamp.cs" />
     <Compile Include="classes\Firefox\BookmarkHandler.cs" />
     <Compile Include="classes\Firefox\DatabaseRequest.cs" />
     <Compile Include="classes\Firefox\Ini.cs" />

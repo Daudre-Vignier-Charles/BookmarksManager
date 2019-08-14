@@ -4,6 +4,9 @@ using BookmarksManager.BookmarkBase;
 
 namespace BookmarksManager.IE
 {
+    /// <summary>
+    /// IE's bookmarks are managed with lnk file into the favorites special folder.
+    /// </summary>
     internal class BookmarkHandler : BookmarkHandlerBase
     {
         private static readonly string BookmarkPath = Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
@@ -24,6 +27,11 @@ namespace BookmarksManager.IE
         internal override bool BookmarkExist(string bookmarkName) =>
             File.Exists(FullLoc(bookmarkName));
 
+        /// <summary>
+        /// Get file path for bookmark passed as argument.
+        /// </summary>
+        /// <param name="bookmarkName"></param>
+        /// <returns>bookmark file path</returns>
         internal static string FullLoc(string bookmarkName) =>
             Path.Combine(BookmarkPath, bookmarkName + ".url");
     }

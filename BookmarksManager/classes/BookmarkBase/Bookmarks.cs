@@ -4,10 +4,20 @@ using System.Collections.Generic;
 
 namespace BookmarksManager.BookmarkBase
 {
+    /// <summary>
+    /// Build Bookmark objects from user defined bookmarkList.xml
+    /// </summary>
     internal class Bookmarks
     {
         private static string xmlFile = "bookmarkList.xml";
 
+        /// <summary>
+        /// Return dictionary containing Bookmark objects.
+        /// </summary>
+        /// <param name="chromeBookmarkHandler"></param>
+        /// <param name="firefoxBookmarkHandler"></param>
+        /// <param name="ieBookmarkHandler"></param>
+        /// <returns></returns>
         public Dictionary<string, Bookmark> Deserialize(Chrome.BookmarkHandler chromeBookmarkHandler, Firefox.BookmarkHandler firefoxBookmarkHandler, IE.BookmarkHandler ieBookmarkHandler)
         {
             bookmarks bookmarks = null;

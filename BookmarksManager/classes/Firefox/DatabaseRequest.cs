@@ -2,10 +2,13 @@
 using System.Xml.Linq;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using BookmarksManager.Firefox.Base;
 
 namespace BookmarksManager.Firefox
 {
+    /// <summary>
+    /// Firefox store bookmarks using a SqLite database.
+    /// Classe is used to query database.
+    /// </summary>
     internal class DatabaseRequest
     {
         SQLiteConnection databaseConnection;
@@ -36,6 +39,13 @@ namespace BookmarksManager.Firefox
             folderId = GetBookmarkFolderId();
         }
 
+        /// <summary>
+        /// Return fk's id.
+        /// Fk is the bookmark url stored into moz_places table.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private string GetFkId(string url, string name)
         {
             string id;
@@ -50,6 +60,12 @@ namespace BookmarksManager.Firefox
             return id;
         }
 
+        /// <summary>
+        /// Add a new fk and return his id.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private string AddFk(string url, string name)
         {
             command.CommandText = String.Format(commandRepository["addFk"], url, name, FfGuid.Get(), FfHash.Get(url));
@@ -72,9 +88,9 @@ namespace BookmarksManager.Firefox
             command.ExecuteNonQuery();
         }
 
-        private bool BExist(string name, string parentId, string type)
+        private bool BExist(string name, string parentId, bookmarkType type)
         {
-            command.CommandText = String.Format(commandRepository["bookmarkExist"], name, type, parentId);
+            command.CommandText = String.Format(commandRepository["bookmarkExist"], name, (int)type, parentId);
             SQLiteDataReader reader = command.ExecuteReader();
             reader.Read();
             bool exist = reader.HasRows;
@@ -83,10 +99,10 @@ namespace BookmarksManager.Firefox
         }
 
         internal bool BookmarkExist(string name) =>
-            BExist(name, folderId, "1");
+            BExist(name, folderId, bookmarkType.Bookmark);
 
         private bool BookmarkFolderExist() =>
-            BExist(folderName, "3", "2");
+            BExist(folderName, "3", bookmarkType.Folder);
 
         private void AddBookMarkFolder()
         {
@@ -103,5 +119,79 @@ namespace BookmarksManager.Firefox
             reader.Close();
             return id;
         }
+
+        private enum bookmarkType
+        {
+            Bookmark = 1,
+            Folder = 2,
+            Separator = 3
+        }
+    }
+
+    /// <summary>
+    /// Return a random 12 bytes GUID.
+    /// </summary>
+    internal static class FfGuid
+    {
+        private static readonly Random rng = new Random();
+        private const string str = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-";
+
+        /// <summary>
+        /// Return a random 12 bytes GUID
+        /// </summary>
+        static internal string Get()
+        {
+            string randomStr = "";
+            for (int i = 1; i <= 12; i++)
+                randomStr += str[rng.Next(str.Length)];
+            return randomStr;
+        }
+    }
+
+    /// <summary>
+    /// Firefox 50+ database url hash.
+    /// This code is a C# port of :
+    /// C version https://github.com/bencaradocdavies/sqlite-mozilla-url-hash and
+    /// Python version https://gist.github.com/boppreh/a9737acb2abf015e6e828277b40efe71 .
+    /// Thanks to bencaradocdavies and boppreh.
+    /// </summary>
+    internal static class FfHash
+    {
+        private const uint magicConst = 2654435769;
+
+        private static uint RotateLeft5(uint value) =>
+            (value << 5) | (value >> 27) & uint.MaxValue;
+
+        private static uint AddToHash(uint hash, uint value) =>
+            (magicConst * (RotateLeft5(hash) ^ value)) & uint.MaxValue;
+
+        private static uint Hash(string url)
+        {
+            uint hash = 0;
+            foreach (char c in url)
+                hash = AddToHash(hash, c);
+            return hash;
+        }
+
+        /// <summary>
+        /// Return url's hash.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        internal static long Get(string url) =>
+            ((long)(Hash(url.Substring(0, url.IndexOf(':'))) & 65535) << 32) + Hash(url);
+    }
+
+
+    /// <summary>
+    /// Firefox use Unix Epoch format (microsecond).
+    /// </summary>
+    internal static class FfTimestamp
+    {
+        /// <summary>
+        /// Return timestamp in Unix Epoch format (microsecond).
+        /// </summary>
+        static internal long Get() =>
+            (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000;
     }
 }
