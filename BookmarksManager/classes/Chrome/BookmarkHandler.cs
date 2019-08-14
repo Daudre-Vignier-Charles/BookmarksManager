@@ -63,16 +63,12 @@ namespace BookmarksManager.Chrome
         private static Newtonsoft.Json.Linq.JObject Deserialize() =>
             (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(System.IO.File.ReadAllText(BookmarkFilePath));
 
-        internal void Apply()
-        {
+        internal void Apply() =>
             File.WriteAllText(BookmarkFilePath, JsonConvert.SerializeObject(ChromeBookmarks, Formatting.Indented));
-        }
 
-        internal override void AddBookmark(Bookmark bookmark)
-        {
+        internal override void AddBookmark(Bookmark bookmark) =>
             Childrens.Add(Newtonsoft.Json.Linq.JObject.Parse(
                 String.Format("{{\"name\": \"{0}\", \"type\": \"url\", \"url\": \"{1}\"}}", bookmark.Name, bookmark.Url)));
-        }
 
         internal override void DeleteBookmark(Bookmark bookmark)
         {

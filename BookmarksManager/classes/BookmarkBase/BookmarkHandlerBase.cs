@@ -11,6 +11,7 @@ namespace BookmarksManager.BookmarkBase
         internal abstract bool BookmarkExist(string bookmarkName);
     }
 
+    [Serializable]
     internal class BookmarkHandlerInitializationException : Exception
     {
         internal static string title = "Initialization Exception";

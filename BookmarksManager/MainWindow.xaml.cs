@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using BookmarksManager.BookmarkBase;
-using System.Drawing;
 
 namespace BookmarksManager
 {

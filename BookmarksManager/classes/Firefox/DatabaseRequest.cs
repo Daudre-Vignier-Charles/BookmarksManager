@@ -3,7 +3,6 @@ using System.Xml.Linq;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using BookmarksManager.Firefox.Base;
-using System.Collections;
 
 namespace BookmarksManager.Firefox
 {
