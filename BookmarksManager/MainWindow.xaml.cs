@@ -40,7 +40,9 @@ namespace BookmarksManager
             InitializeComponent();
 
 
+            #region CHECK
             // Check running browsers
+            // IE does not need any check, bookmarks can be removed and added without closing IE
             if (CheckRun(Browser.Chrome))
                 initializationSuccessful[Browser.Chrome] = false;
             if (CheckRun(Browser.Firefox))
@@ -48,7 +50,9 @@ namespace BookmarksManager
 
             // Check BookmarkManager settings
             CheckSettings();
+            #endregion CHECK
 
+            #region INIT_HANDLER
             // Init Handlers
             try
             {
@@ -68,15 +72,9 @@ namespace BookmarksManager
                 MessageBox.Show(e.Message, BookmarkHandlerInitializationException.title, MessageBoxButton.OK, MessageBoxImage.Warning);
                 initializationSuccessful[Browser.Chrome] = false;
             }
-            try
-            {
-                ieBookmarkHandler = new IE.BookmarkHandler();
-            }
-            catch (BookmarkHandlerInitializationException e)
-            {
-                MessageBox.Show(e.Message, BookmarkHandlerInitializationException.title, MessageBoxButton.OK, MessageBoxImage.Warning);
-                initializationSuccessful[Browser.IE] = false;
-            }
+            // IE initialization cannot fail
+            ieBookmarkHandler = new IE.BookmarkHandler();
+            #endregion INIT_HANDLER
 
             // get all bookmarks
             allBookmarks = bookmarks.Deserialize(chromeBookmarkHandler, firefoxBookmarkHandler, ieBookmarkHandler);
@@ -90,7 +88,6 @@ namespace BookmarksManager
             foreach (KeyValuePair<string, Bookmark> bookmark in allBookmarks)
             {
                 NStackPanelBuilder(bookmark.Key);
-                // TODO : Link x.BookmarkHandler fatal error, does not build if error:x.BookmarkHandler
                 BStackPanelBuilder(IEStackPanel, Browser.IE, bookmark);
                 BStackPanelBuilder(FirefoxStackPanel, Browser.Firefox, bookmark);
                 BStackPanelBuilder(ChromeStackPanel, Browser.Chrome, bookmark);
