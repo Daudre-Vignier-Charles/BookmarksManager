@@ -142,9 +142,9 @@
     <Content Include="bookmarkList.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="favicon.ico" />
     <Resource Include="COPYRIGHT.txt" />
     <Resource Include="LICENSE.txt" />
+    <Resource Include="favicon.ico" />
     <Content Include="Resources\FirefoxSqliteCommands.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
