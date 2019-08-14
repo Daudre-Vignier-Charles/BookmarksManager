@@ -84,17 +84,8 @@ namespace BookmarksManager.Properties {
         }
         
         /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Icon semblable à (Icône).
-        /// </summary>
-        internal static System.Drawing.Icon favicon {
-            get {
-                object obj = ResourceManager.GetObject("favicon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!-- Preformated queries for Firefox SQLite database --&gt;
         ///&lt;root&gt;
         ///  &lt;!-- fk --&gt;
         ///  &lt;addFk&gt;
@@ -107,9 +98,7 @@ namespace BookmarksManager.Properties {
         ///  &lt;!-- bookmark --&gt;
         ///  &lt;addBookmark&gt;
         ///    INSERT INTO moz_bookmarks (type, parent, title, guid, dateAdded, lastModified, fk) VALUES (1, &quot;{0}&quot;, &quot;{1}&quot;, &quot;{2}&quot;, {3}, {4}, {5});
-        ///  &lt;/addBookmark&gt;
-        ///  &lt;deleteBookmark&gt;
-        ///    DELETE FROM moz_bookma [le reste de la chaîne a été tronqué]&quot;;.
+        ///  &lt;/ad [le reste de la chaîne a été tronqué]&quot;;.
         /// </summary>
         internal static string FirefoxSqliteCommands {
             get {

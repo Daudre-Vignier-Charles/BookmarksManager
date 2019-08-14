@@ -138,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Copyright.txt" />
-    <None Include="Resources\favicon.ico" />
     <Content Include="bookmarkList.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
