@@ -39,18 +39,20 @@ namespace BookmarksManager
         {
             InitializeComponent();
 
-            if (CheckRun())
-            {
-                this.Close();
-                return;
-            }
 
+            // Check running browsers
+            if (CheckRun(Browser.Chrome))
+                initializationSuccessful[Browser.Chrome] = false;
+            if (CheckRun(Browser.Firefox))
+                initializationSuccessful[Browser.Firefox] = false;
+
+            // Check BookmarkManager settings
             CheckSettings();
 
             // Init Handlers
             try
             {
-                firefoxBookmarkHandler = new Firefox.BookmarkHandler();
+                firefoxBookmarkHandler = initializationSuccessful[Browser.Firefox] ? new Firefox.BookmarkHandler() : null;
             }
             catch (BookmarkHandlerInitializationException e)
             {
@@ -59,7 +61,7 @@ namespace BookmarksManager
             }
             try
             {
-                chromeBookmarkHandler = new Chrome.BookmarkHandler();
+                chromeBookmarkHandler = initializationSuccessful[Browser.Chrome] ? new Chrome.BookmarkHandler() : null;
             }
             catch (BookmarkHandlerInitializationException e)
             {
@@ -193,15 +195,15 @@ namespace BookmarksManager
             }
         }
 
-        private bool CheckRun()
+        private bool CheckRun(Browser browser)
         {
             while (true)
             {
-                if (Browsers.IsRunning(Browser.Chrome) || Browsers.IsRunning(Browser.Firefox))
+                if (Browsers.IsRunning(browser))
                 {
                     MessageBoxResult result = MessageBox.Show(
-                        "Chrome or Firefox browser is running, please close it and press OK.\nRe-open it after exiting BookmarksManager",
-                        "Please close Firefox and Chrome browser", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                        String.Format("{0} browser is running, please close it and press OK.\nRe-open it after exiting BookmarksManager", browser.ToString()),
+                        "Please close {0} browser", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Cancel)
                     {
                         applyOnExit = false;
