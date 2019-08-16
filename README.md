@@ -24,7 +24,7 @@ Edit BookmarkFolderName into BookmarksManager.exe.config.
 
 Edit FirefoxVersion into BookmarksManager.exe.config.
 
-Key may be :
+Version may be :
 
 - esr
 - release
