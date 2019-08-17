@@ -10,20 +10,23 @@ namespace BookmarksManager.BookmarkBase
     internal class Bookmarks
     {
         private static string xmlFile = "bookmarkList.xml";
+        private Firefox.BookmarkHandler firefoxBookmarkHandler;
+        private Chrome.BookmarkHandler chromeBookmarkHandler;
+        private IE.BookmarkHandler ieBookmarkHandler;
+        internal Dictionary<string, Bookmark> allBookmarks = new Dictionary<string, Bookmark>();
+        XmlSerializer serializer = new XmlSerializer(typeof(bookmarks));
 
-        /// <summary>
-        /// Return dictionary containing Bookmark objects.
-        /// </summary>
-        /// <param name="chromeBookmarkHandler"></param>
-        /// <param name="firefoxBookmarkHandler"></param>
-        /// <param name="ieBookmarkHandler"></param>
-        /// <returns></returns>
-        public Dictionary<string, Bookmark> Deserialize(Chrome.BookmarkHandler chromeBookmarkHandler, Firefox.BookmarkHandler firefoxBookmarkHandler, IE.BookmarkHandler ieBookmarkHandler)
+        public Bookmarks(Chrome.BookmarkHandler chromeBookmarkHandler, Firefox.BookmarkHandler firefoxBookmarkHandler, IE.BookmarkHandler ieBookmarkHandler)
+        {
+            this.ieBookmarkHandler = ieBookmarkHandler;
+            this.firefoxBookmarkHandler = firefoxBookmarkHandler;
+            this.chromeBookmarkHandler = chromeBookmarkHandler;
+        }
+
+        internal void Deserialize()
         {
             bookmarks bookmarks = null;
             bookmarksBookmark[] bookmarkList;
-            Dictionary<string, Bookmark> ret = new Dictionary<string, Bookmark>();
-            XmlSerializer serializer = new XmlSerializer(typeof(bookmarks));
             using (FileStream stream = new FileStream(xmlFile, FileMode.Open))
             {
                 bookmarks = (bookmarks)serializer.Deserialize(stream);
@@ -31,20 +34,52 @@ namespace BookmarksManager.BookmarkBase
             bookmarkList = bookmarks.bookmark;
             foreach (bookmarksBookmark bookmark in bookmarkList)
             {
-                ret[bookmark.name] = new Bookmark()
-                {
-                    Name = bookmark.name,
-                    Url = bookmark.url,
-                    ChromeExist = chromeBookmarkHandler?.BookmarkExist(bookmark.name) ?? false,
-                    FirefoxExist = firefoxBookmarkHandler?.BookmarkExist(bookmark.name) ?? false,
-                    IEExist = ieBookmarkHandler?.BookmarkExist(bookmark.name) ?? false
-
-                };
-                ret[bookmark.name].Chrome = (bookmark.chrome || !bookmark.chromeSpecified) && chromeBookmarkHandler != null ? true : false;
-                ret[bookmark.name].Firefox = (bookmark.firefox || !bookmark.firefoxSpecified)  && firefoxBookmarkHandler != null ? true : false;
-                ret[bookmark.name].IE = (bookmark.ie || !bookmark.ieSpecified) && ieBookmarkHandler != null ? true : false;
+                allBookmarks[bookmark.name] = BuildBoomark(
+                    bookmark.name,
+                    bookmark.url,
+                    (bookmark.ie || !bookmark.ieSpecified) && ieBookmarkHandler != null ? true : false,
+                    (bookmark.chrome || !bookmark.chromeSpecified) && chromeBookmarkHandler != null ? true : false,
+                    (bookmark.firefox || !bookmark.firefoxSpecified) && firefoxBookmarkHandler != null ? true : false);
             }
-            return ret;
         }
+
+        public void Serialize()
+        {
+            bookmarks bm = new bookmarks();
+            List<bookmarksBookmark> abm = new List<bookmarksBookmark>();
+            foreach (Bookmark bookmark in allBookmarks.Values)
+            {
+                abm.Add(
+                    new bookmarksBookmark()
+                    {
+                        name = bookmark.Name,
+                        url = bookmark.Url,
+                        ie = bookmark.IE,
+                        ieSpecified = true,
+                        chrome = bookmark.Chrome,
+                        chromeSpecified = true,
+                        firefox = bookmark.Firefox,
+                        firefoxSpecified = true
+                    });
+            }
+            bm.bookmark = abm.ToArray();
+            using (FileStream stream = new FileStream(xmlFile, FileMode.Create))
+            {
+                serializer.Serialize(stream, bm);
+            }
+        }
+
+        internal Bookmark BuildBoomark(string name, string url, bool ie, bool chrome, bool firefox) =>
+            new Bookmark()
+            {
+                Name = name,
+                Url = url,
+                ChromeExist = chromeBookmarkHandler?.BookmarkExist(name) ?? false,
+                FirefoxExist = firefoxBookmarkHandler?.BookmarkExist(name) ?? false,
+                IEExist = ieBookmarkHandler?.BookmarkExist(name) ?? false,
+                IE = ie,
+                Chrome = chrome,
+                Firefox = firefox
+            };
     }
 }

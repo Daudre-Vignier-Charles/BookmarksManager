@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookmarksManager"
         mc:Ignorable="d"
-        Title="BookmarkManager" Height="450" Width="800" Closing="MainWindow_Closing" MinWidth="360" MinHeight="300">
-    <Grid>
-        <ScrollViewer>
+        Title="BookmarkManager" Height="450" Width="800" Closing="MainWindow_Closing" MinWidth="650" MinHeight="450">
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="371*"/>
+            <RowDefinition Height="48*"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Margin="0,0,0,6">
             <Grid x:Name="mainGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MinWidth="80"/>
@@ -29,5 +34,20 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
+        <Grid Height="71" Grid.Row="1" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" Margin="0,0,0,-23">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="67*"/>
+                <ColumnDefinition Width="121*"/>
+                <ColumnDefinition Width="228"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="AddBookmarkName" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" Margin="52,12,0,33"/>
+            <TextBox x:Name="AddBookmarkUrl" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" Margin="53,12,0,33" Grid.Column="1"/>
+            <Button x:Name="AddBookmarkButton" Content="Add" HorizontalAlignment="Left" VerticalAlignment="Center" Width="45" Height="26" Margin="172,12,0,33" Grid.Column="2" Click="AddBookmarkButton_Click"/>
+            <CheckBox x:Name="AddBookmarkIe" Content="IE" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" IsChecked="True" RenderTransformOrigin="2.446,0.413" Width="29" Margin="10,18,0,27" Grid.Column="2"/>
+            <CheckBox x:Name="AddBookmarkChrome" Content="Chrome" HorizontalAlignment="Left" VerticalAlignment="Center"  Height="26" IsChecked="True" Width="62" Margin="44,18,0,27" Grid.Column="2"/>
+            <CheckBox x:Name="AddBookmarkFirefox" Content="Firefox" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" IsChecked="True" Width="56" Margin="111,18,0,27" Grid.Column="2"/>
+            <Label Content="Name" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" Width="42" Margin="10,12,0,33"/>
+            <Label Content="URL" HorizontalAlignment="Left"  VerticalAlignment="Center" Height="26" RenderTransformOrigin="0.576,-0.457" Width="34" Margin="10,12,0,33" Grid.Column="1"/>
+        </Grid>
     </Grid>
 </Window>

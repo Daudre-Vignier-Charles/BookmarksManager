@@ -14,9 +14,9 @@ namespace BookmarksManager
     {
         #region DECLARE
         bool applyOnExit = true;
+        bool bookmarkAdded = false;
 
-        Bookmarks bookmarks = new Bookmarks();
-        Dictionary<string, Bookmark> allBookmarks;
+        Bookmarks bookmarks;
         Dictionary<Browser, bool> initializationSuccessful = new Dictionary<Browser, bool>()
         {
             { Browser.Chrome, true },
@@ -45,7 +45,7 @@ namespace BookmarksManager
             CheckSettings();
             #endregion CHECK
 
-            #region INIT_HANDLER
+            #region INIT
             // Init Handlers
             try
             {
@@ -67,10 +67,11 @@ namespace BookmarksManager
             }
             // IE initialization cannot fail
             ieBookmarkHandler = new IE.BookmarkHandler();
-            #endregion INIT_HANDLER
+            #endregion INIT
 
-            // get all bookmarks
-            allBookmarks = bookmarks.Deserialize(chromeBookmarkHandler, firefoxBookmarkHandler, ieBookmarkHandler);
+            // init bookmarks
+            bookmarks = new Bookmarks(chromeBookmarkHandler, firefoxBookmarkHandler, ieBookmarkHandler);
+            bookmarks.Deserialize();
 
             // UI
             UIBuilder();
@@ -78,16 +79,21 @@ namespace BookmarksManager
 
         private void UIBuilder()
         {
-            foreach (KeyValuePair<string, Bookmark> bookmark in allBookmarks)
+            foreach (Bookmark bookmark in bookmarks.allBookmarks.Values)
             {
-                NStackPanelBuilder(bookmark.Key);
-                BStackPanelBuilder(IEStackPanel, Browser.IE, bookmark);
-                BStackPanelBuilder(FirefoxStackPanel, Browser.Firefox, bookmark);
-                BStackPanelBuilder(ChromeStackPanel, Browser.Chrome, bookmark);
+                UIInsertBookmark(bookmark);
             }
         }
 
-        private void BStackPanelBuilder(StackPanel stackPanel, Browser browser, KeyValuePair<string, Bookmark> bookmark)
+        private void UIInsertBookmark(Bookmark bookmark)
+        {
+            NStackPanelBuilder(bookmark.Name);
+            BStackPanelBuilder(IEStackPanel, Browser.IE, bookmark);
+            BStackPanelBuilder(FirefoxStackPanel, Browser.Firefox, bookmark);
+            BStackPanelBuilder(ChromeStackPanel, Browser.Chrome, bookmark);
+        }
+
+        private void BStackPanelBuilder(StackPanel stackPanel, Browser browser, Bookmark bookmark)
         {
             stackPanel.Children.Add(new Separator());
             stackPanel.Children.Add(CheckBoxBuilder(browser, bookmark));
@@ -99,12 +105,12 @@ namespace BookmarksManager
             NameStackPanel.Children.Add(new Label() { Content = name, Height = 26 });
         }
 
-        private CheckBox CheckBoxBuilder(Browser browser, KeyValuePair<string, Bookmark> bookmark)
+        private CheckBox CheckBoxBuilder(Browser browser, Bookmark bookmark)
         {
             CheckBox checkBox = new CheckBox()
             {
                 IsThreeState = false,
-                Tag = bookmark.Value.Name,
+                Tag = bookmark.Name,
                 Height = 20,
                 Margin = new Thickness(0, 6, 0, 0),
                 Opacity = initializationSuccessful[browser] ? 100 : 0
@@ -112,20 +118,20 @@ namespace BookmarksManager
             switch (browser)
             {
                 case Browser.Chrome:
-                    checkBox.IsEnabled = bookmark.Value.Chrome;
-                    checkBox.IsChecked = bookmark.Value.ChromeExist;
+                    checkBox.IsEnabled = bookmark.Chrome;
+                    checkBox.IsChecked = bookmark.ChromeExist;
                     checkBox.Checked += ChromeCheckBox_Checked;
                     checkBox.Unchecked += ChromeCheckBox_Unchecked;
                     break;
                 case Browser.IE:
-                    checkBox.IsEnabled = bookmark.Value.IE;
-                    checkBox.IsChecked = bookmark.Value.IEExist;
+                    checkBox.IsEnabled = bookmark.IE;
+                    checkBox.IsChecked = bookmark.IEExist;
                     checkBox.Checked += IECheckBox_Checked;
                     checkBox.Unchecked += IECheckBox_Unchecked;
                     break;
                 case Browser.Firefox:
-                    checkBox.IsEnabled = bookmark.Value.Firefox;
-                    checkBox.IsChecked = bookmark.Value.FirefoxExist;
+                    checkBox.IsEnabled = bookmark.Firefox;
+                    checkBox.IsChecked = bookmark.FirefoxExist;
                     checkBox.Checked += FirefoxCheckBox_Checked;
                     checkBox.Unchecked += FirefoxCheckBox_Unchecked;
                     break;
@@ -134,22 +140,22 @@ namespace BookmarksManager
         }
 
         private void IECheckBox_Checked(object sender, RoutedEventArgs e) =>
-            ieBookmarkHandler.AddBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
+            ieBookmarkHandler.AddBookmark(bookmarks.allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
         private void IECheckBox_Unchecked(object sender, RoutedEventArgs e) =>
-            ieBookmarkHandler.DeleteBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
+            ieBookmarkHandler.DeleteBookmark(bookmarks.allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
         private void ChromeCheckBox_Checked(object sender, RoutedEventArgs e) =>
-            chromeBookmarkHandler.AddBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
+            chromeBookmarkHandler.AddBookmark(bookmarks.allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
         private void ChromeCheckBox_Unchecked(object sender, RoutedEventArgs e) =>
-            chromeBookmarkHandler.DeleteBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
+            chromeBookmarkHandler.DeleteBookmark(bookmarks.allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
         private void FirefoxCheckBox_Checked(object sender, RoutedEventArgs e) =>
-            firefoxBookmarkHandler.AddBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
+            firefoxBookmarkHandler.AddBookmark(bookmarks.allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
         private void FirefoxCheckBox_Unchecked(object sender, RoutedEventArgs e) =>
-            firefoxBookmarkHandler.DeleteBookmark(allBookmarks[((CheckBox)sender).Tag.ToString()]);
+            firefoxBookmarkHandler.DeleteBookmark(bookmarks.allBookmarks[((CheckBox)sender).Tag.ToString()]);
 
         private void Copyright_Click(object sender, RoutedEventArgs e) =>
             MessageBox.Show(Properties.Resources.Copyright, "Copyright", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -158,8 +164,11 @@ namespace BookmarksManager
         {
             if (applyOnExit)
                 chromeBookmarkHandler.Apply();
+            if (bookmarkAdded)
+                if (MessageBox.Show("Bookmark was added.\nWould you want save ?", "Save modifications",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    bookmarks.Serialize();
         }
-
         private bool CheckRun(Browser browser)
         {
             while (true)
@@ -168,7 +177,7 @@ namespace BookmarksManager
                 {
                     MessageBoxResult result = MessageBox.Show(
                         String.Format("{0} browser is running, please close it and press OK.\nRe-open it after exiting BookmarksManager", browser.ToString()),
-                        "Please close {0} browser", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                        String.Format("Please close {0} browser", browser.ToString()), MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Cancel)
                     {
                         applyOnExit = false;
@@ -196,5 +205,45 @@ namespace BookmarksManager
                 Settings.BookmarkFolderName = "Corporate bookmarks";
             }
         }
+
+        private void AddBookmarkButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(AddBookmarkName.Text))
+            {
+                MessageBox.Show("Name cannot be empty.", "Error while adding bookmark",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+            foreach (Bookmark bookmark in bookmarks.allBookmarks.Values)
+            {
+                if (bookmark.Name == AddBookmarkName.Text)
+                {
+                    MessageBox.Show("Bookmark already exist",
+                        "Error while adding bookmark",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+            }
+            if (!CheckUrl(AddBookmarkUrl.Text))
+            {
+                MessageBox.Show("Url cannot be empty and must begin with \"http://\" or \"https://\".", "Error while adding bookmark",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+            bookmarks.allBookmarks[AddBookmarkName.Text] = bookmarks.BuildBoomark(
+                AddBookmarkName.Text,
+                AddBookmarkUrl.Text,
+                (bool)AddBookmarkIe.IsChecked,
+                (bool)AddBookmarkChrome.IsChecked,
+                (bool)AddBookmarkFirefox.IsChecked);
+            UIInsertBookmark(bookmarks.allBookmarks[AddBookmarkName.Text]);
+            bookmarkAdded = true;
+        }
+
+        private bool CheckUrl(string url) =>
+            (url.ToLower().StartsWith("http://") && url.Length > 8) || (url.ToLower().StartsWith("https://") && url.Length > 9);
     }
 }

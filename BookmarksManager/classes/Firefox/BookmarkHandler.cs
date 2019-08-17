@@ -9,12 +9,13 @@ namespace BookmarksManager.Firefox
     internal class BookmarkHandler : BookmarkHandlerBase
     {
         DatabaseRequest request;
-        Ini ini = new Ini();
+        Ini ini;
 
         public BookmarkHandler()
         {
             try
             {
+                ini = new Ini();
                 request = new DatabaseRequest(ini.bookmarkDatabasePath, Settings.BookmarkFolderName);
             }
             catch (Exception e)
