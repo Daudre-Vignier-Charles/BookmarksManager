@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace BookmarksManager.BookmarkBase
 {
@@ -10,13 +11,13 @@ namespace BookmarksManager.BookmarkBase
     internal class Bookmarks
     {
         private static string xmlFile = "bookmarkList.xml";
-        private Firefox.BookmarkHandler firefoxBookmarkHandler;
-        private Chrome.BookmarkHandler chromeBookmarkHandler;
-        private IE.BookmarkHandler ieBookmarkHandler;
+        private BookmarkHandlerBase firefoxBookmarkHandler;
+        private BookmarkHandlerBase chromeBookmarkHandler;
+        private BookmarkHandlerBase ieBookmarkHandler;
         internal Dictionary<string, Bookmark> allBookmarks = new Dictionary<string, Bookmark>();
         XmlSerializer serializer = new XmlSerializer(typeof(bookmarks));
 
-        public Bookmarks(Chrome.BookmarkHandler chromeBookmarkHandler, Firefox.BookmarkHandler firefoxBookmarkHandler, IE.BookmarkHandler ieBookmarkHandler)
+        public Bookmarks(BookmarkHandlerBase ieBookmarkHandler, BookmarkHandlerBase chromeBookmarkHandler, BookmarkHandlerBase firefoxBookmarkHandler)
         {
             this.ieBookmarkHandler = ieBookmarkHandler;
             this.firefoxBookmarkHandler = firefoxBookmarkHandler;
@@ -63,9 +64,16 @@ namespace BookmarksManager.BookmarkBase
                     });
             }
             bm.bookmark = abm.ToArray();
-            using (FileStream stream = new FileStream(xmlFile, FileMode.Create))
+            try
+            {
+                using (FileStream stream = new FileStream(xmlFile, FileMode.Create))
             {
                 serializer.Serialize(stream, bm);
+            }
+            }
+            catch(System.UnauthorizedAccessException e)
+            {
+                MessageBox.Show("bookmarkList.xml cannot be edited. Change will not be saved.");
             }
         }
 

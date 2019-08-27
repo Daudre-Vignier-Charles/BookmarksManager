@@ -19,6 +19,7 @@
                     <ColumnDefinition Width="61"/>
                     <ColumnDefinition Width="61"/>
                     <ColumnDefinition Width="61"/>
+                    <ColumnDefinition Width="26"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel x:Name="NameStackPanel">
                     <Button x:Name="Copyright" Content="©" Background="#FFE8ECEC" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Height="40" BorderBrush="{x:Null}" Foreground="#FF1630D4" Click="Copyright_Click"/>
@@ -32,6 +33,9 @@
                 <StackPanel x:Name="FirefoxStackPanel" Grid.Column="3">
                     <Label Content="Firefox" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Height="40"/>
                 </StackPanel>
+                <StackPanel x:Name="DeleteStackPanel" Grid.Column="4">
+                    <Image Height="18" Source="Resources\bin.png" Margin="0,5,0,17"/>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
         <Grid Height="71" Grid.Row="1" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" Margin="0,0,0,-23">
@@ -40,8 +44,8 @@
                 <ColumnDefinition Width="121*"/>
                 <ColumnDefinition Width="228"/>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="AddBookmarkName" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" Margin="52,12,0,33"/>
-            <TextBox x:Name="AddBookmarkUrl" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" Margin="53,12,0,33" Grid.Column="1"/>
+            <TextBox x:Name="AddBookmarkName" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" Margin="52,12,0,33" KeyDown="AddBookmarkTextBox_KeyDown" MaxLength="20" MaxLines="1"/>
+            <TextBox x:Name="AddBookmarkUrl" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" Margin="53,12,0,33" Grid.Column="1" KeyDown="AddBookmarkTextBox_KeyDown" MaxLength="256" MaxLines="1"/>
             <Button x:Name="AddBookmarkButton" Content="Add" HorizontalAlignment="Left" VerticalAlignment="Center" Width="45" Height="26" Margin="172,12,0,33" Grid.Column="2" Click="AddBookmarkButton_Click"/>
             <CheckBox x:Name="AddBookmarkIe" Content="IE" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" IsChecked="True" RenderTransformOrigin="2.446,0.413" Width="29" Margin="10,18,0,27" Grid.Column="2"/>
             <CheckBox x:Name="AddBookmarkChrome" Content="Chrome" HorizontalAlignment="Left" VerticalAlignment="Center"  Height="26" IsChecked="True" Width="62" Margin="44,18,0,27" Grid.Column="2"/>

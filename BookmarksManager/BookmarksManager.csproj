@@ -148,6 +148,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="favicon.ico" />
+    <Resource Include="Resources\bin.png" />
     <Content Include="Resources\FirefoxSqliteCommands.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
