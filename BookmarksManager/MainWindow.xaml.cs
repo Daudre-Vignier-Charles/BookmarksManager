@@ -11,7 +11,9 @@ namespace BookmarksManager
 {
     public partial class MainWindow : Window
     {
-        static System.Threading.Mutex mutex = new System.Threading.Mutex(true, "{3d6348e6-2dcd-49e2-8874-f6fde19994cd}");
+        bool test;
+        static System.Threading.Mutex mutex;
+        bool mutexOwner;
 
         bool fatalError = false;
 
@@ -41,7 +43,9 @@ namespace BookmarksManager
             InitializeComponent();
 
             // Check singleton violation
-            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            mutex = new System.Threading.Mutex(true, "{00358e6-2dcd-49e2-8874-f6fde19994cd}", out test);
+            mutexOwner = mutex.WaitOne(TimeSpan.Zero, true);
+            if (!test)
             {
                 MessageBox.Show("only one instance at a time");
                 fatalError = true;
@@ -300,7 +304,8 @@ namespace BookmarksManager
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            mutex.ReleaseMutex();
+            if (!(mutex is null) && mutexOwner)
+                mutex.ReleaseMutex();
             if (!fatalError)
             {
                 if (infos[Browser.Chrome].initializationSuccessful)
