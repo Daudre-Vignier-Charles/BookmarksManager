@@ -11,7 +11,7 @@ namespace BookmarksManager
 {
     public partial class MainWindow : Window
     {
-        bool test;
+        bool mutexInitialOwnership;
         static System.Threading.Mutex mutex;
         bool mutexOwner;
 
@@ -43,9 +43,9 @@ namespace BookmarksManager
             InitializeComponent();
 
             // Check singleton violation
-            mutex = new System.Threading.Mutex(true, "{00358e6-2dcd-49e2-8874-f6fde19994cd}", out test);
+            mutex = new System.Threading.Mutex(true, "{00358e6-2dcd-49e2-8874-f6fde19994cd}", out mutexInitialOwnership);
             mutexOwner = mutex.WaitOne(TimeSpan.Zero, true);
-            if (!test)
+            if (!mutexInitialOwnership)
             {
                 MessageBox.Show("only one instance at a time");
                 fatalError = true;
