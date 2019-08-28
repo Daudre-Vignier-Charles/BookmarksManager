@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using BookmarksManager.BookmarkBase;
-using System.Collections;
 using System.Windows.Input;
 
 namespace BookmarksManager
@@ -44,7 +43,6 @@ namespace BookmarksManager
 
             // Check singleton violation
             mutex = new System.Threading.Mutex(true, "{00358e6-2dcd-49e2-8874-f6fde19994cd}", out mutexInitialOwnership);
-            mutexOwner = mutex.WaitOne(TimeSpan.Zero, true);
             if (!mutexInitialOwnership)
             {
                 MessageBox.Show("only one instance at a time");
@@ -304,7 +302,7 @@ namespace BookmarksManager
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!(mutex is null) && mutexOwner)
+            if (!(mutex is null) && mutexInitialOwnership)
                 mutex.ReleaseMutex();
             if (!fatalError)
             {
