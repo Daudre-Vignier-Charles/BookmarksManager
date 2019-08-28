@@ -96,6 +96,7 @@
     <Compile Include="classes\BookmarkBase\BookmarkHandlerBase.cs" />
     <Compile Include="classes\BookmarkBase\Bookmarks.cs" />
     <Compile Include="classes\BrowerBase.cs" />
+    <Compile Include="classes\RegistryHelper.cs" />
     <Compile Include="classes\Settings.cs" />
     <Compile Include="classes\BookmarkBase\Bookmark.cs" />
     <Compile Include="classes\Chrome\BookmarkHandler.cs" />

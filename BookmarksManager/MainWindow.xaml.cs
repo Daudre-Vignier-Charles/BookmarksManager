@@ -5,23 +5,26 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using BookmarksManager.BookmarkBase;
 using System.Windows.Input;
+using BookmarksManager.classes;
 
 namespace BookmarksManager
 {
     public partial class MainWindow : Window
     {
-        bool mutexInitialOwnership;
-        static System.Threading.Mutex mutex;
-        bool mutexOwner;
+        private bool mutexInitialOwnership;
+        private System.Threading.Mutex mutex;
+        private string mutexGuid;
 
-        bool fatalError = false;
+        private bool fatalError = false;
 
-        static readonly string[] protos = new string[] { "http", "https", "ftp" };
-        bool bookmarksModified = false;
+        private static readonly string[] protos = new string[] { "http", "https", "ftp" };
+        private bool bookmarksModified = false;
 
         Bookmarks bookmarks;
 
-        internal class BookmarkHandlerInfos
+        RegistryHelper registryHelper = new RegistryHelper();
+
+        private class BookmarkHandlerInfos
         {
             internal BookmarkHandlerBase handler;
             internal Type handlerType = null;
@@ -29,7 +32,7 @@ namespace BookmarksManager
             internal bool initializationSuccessful = true;
         }
 
-        internal class UIInfo
+        private class UIInfo
         {
             internal string name;
             internal Browser browser;
@@ -42,10 +45,10 @@ namespace BookmarksManager
             InitializeComponent();
 
             // Check singleton violation
-            mutex = new System.Threading.Mutex(true, "{00358e6-2dcd-49e2-8874-f6fde19994cd}", out mutexInitialOwnership);
+            mutex = new System.Threading.Mutex(true, registryHelper.GetGuid(), out mutexInitialOwnership);
             if (!mutexInitialOwnership)
             {
-                MessageBox.Show("only one instance at a time");
+                MessageBox.Show("BookmarksManager can't be opened twice.", "Fatal error : Singleton", MessageBoxButton.OK, MessageBoxImage.Error);
                 fatalError = true;
                 this.Close();
                 return;
@@ -90,7 +93,7 @@ namespace BookmarksManager
             {
                 MessageBox.Show(
                     "Fatal error while getting bookmark list from bookmarkList.xml, file does not exist or is not accessible.",
-                    "Fatal error - file IO",
+                    "Fatal error : file IO",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 fatalError = true;
@@ -115,7 +118,7 @@ namespace BookmarksManager
                 {
                     MessageBoxResult result = MessageBox.Show(
                         String.Format("{0} browser is running, please close it and press OK.\nRe-open it after exiting BookmarksManager", browser.ToString()),
-                        String.Format("Please close {0} browser", browser.ToString()), MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                        String.Format("Warning : Browser is running", browser.ToString()), MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Cancel)
                     {
                         return true;
@@ -137,8 +140,8 @@ namespace BookmarksManager
                     err = "BookmarksHandler.exe.config not found.";
                 else
                     err = "BookmarkFolderName property is not set or BookmarksHandler.exe.config is empty.";
-                err += " Setting default BookmarkFolderName=\"Corporate bookmarks\"";
-                MessageBox.Show(err, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                err += " Setting default BookmarkFolderName : \"Corporate bookmarks\"";
+                MessageBox.Show(err, "Warning : Settings error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Settings.BookmarkFolderName = "Corporate bookmarks";
             }
         }
@@ -247,7 +250,7 @@ namespace BookmarksManager
         {
             if (String.IsNullOrWhiteSpace(AddBookmarkName.Text))
             {
-                MessageBox.Show("Name cannot be empty.", "Error while adding bookmark",
+                MessageBox.Show("Name cannot be empty.", "Info : Error while adding bookmark",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
@@ -256,8 +259,8 @@ namespace BookmarksManager
             {
                 if (bookmark.Name == AddBookmarkName.Text)
                 {
-                    MessageBox.Show("Bookmark already exist",
-                        "Error while adding bookmark",
+                    MessageBox.Show("Bookmark already exists.",
+                        "Info : Error while adding bookmark",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                     return;
@@ -265,7 +268,7 @@ namespace BookmarksManager
                 if (bookmark.Url == AddBookmarkUrl.Text)
                 {
                     MessageBox.Show("Bookmark with this url already exist : " + bookmark.Name,
-                        "Error while adding bookmark",
+                        "Info : Error while adding bookmark",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                     return;
@@ -273,7 +276,8 @@ namespace BookmarksManager
             }
             if (!IsValidUrl(AddBookmarkUrl.Text))
             {
-                MessageBox.Show("Url cannot be empty and must begin with \"http://\", \"https://\" or \"ftp://\".", "Error while adding bookmark",
+                MessageBox.Show("Url cannot be empty and must begin with \"http://\", \"https://\" or \"ftp://\".",
+                    "Info : Error while adding bookmark",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
@@ -298,21 +302,6 @@ namespace BookmarksManager
                     if (urlpart[1].StartsWith("//") && urlpart[1].Length > 2)
                         return true;
             return false;
-        }
-
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (!(mutex is null) && mutexInitialOwnership)
-                mutex.ReleaseMutex();
-            if (!fatalError)
-            {
-                if (infos[Browser.Chrome].initializationSuccessful)
-                    ((Chrome.BookmarkHandler)infos[Browser.Chrome].handler).Apply();
-                if (bookmarksModified)
-                    if (MessageBox.Show("Bookmark was modified.\nWould you want to save changes ?", "Save bookmarks changes",
-                            MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        bookmarks.Serialize();
-            }
         }
 
         private void DeleteBookmarkButton_Click(object sender, RoutedEventArgs e)
@@ -353,6 +342,20 @@ namespace BookmarksManager
             DeleteStackPanel.Children.RemoveAt(DeleteStackPanel.Children.IndexOf(button) - 1);
             DeleteStackPanel.Children.Remove(button);
             bookmarksModified = true;
+        }
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!(mutex is null) && mutexInitialOwnership)
+                mutex.ReleaseMutex();
+            if (!fatalError)
+            {
+                if (infos[Browser.Chrome].initializationSuccessful)
+                    ((Chrome.BookmarkHandler)infos[Browser.Chrome].handler).Apply();
+                if (bookmarksModified)
+                    if (MessageBox.Show("Bookmark was modified.\nWould you want to save changes ?", "Save bookmarks changes",
+                            MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        bookmarks.Serialize();
+            }
         }
     }
 }
