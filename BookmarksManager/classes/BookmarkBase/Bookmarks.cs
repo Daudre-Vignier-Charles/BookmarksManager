@@ -71,7 +71,7 @@ namespace BookmarksManager.BookmarkBase
                 serializer.Serialize(stream, bm);
             }
             }
-            catch(System.UnauthorizedAccessException e)
+            catch(System.UnauthorizedAccessException)
             {
                 MessageBox.Show("bookmarkList.xml cannot be edited. Change will not be saved.");
             }

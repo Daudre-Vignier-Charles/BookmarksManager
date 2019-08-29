@@ -13,7 +13,6 @@ namespace BookmarksManager
     {
         private bool mutexInitialOwnership;
         private System.Threading.Mutex mutex;
-        private string mutexGuid;
 
         private bool fatalError = false;
 

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Xml.Linq;
-using System.Data.SQLite;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Xml.Linq;
 
 namespace BookmarksManager.Firefox
 {
