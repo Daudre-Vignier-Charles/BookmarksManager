@@ -4,7 +4,7 @@
 
 Add and remove browser bookmarks from a central repository.
 
-![image](https://user-images.githubusercontent.com/17654421/63036080-a998c000-bebc-11e9-9e39-8323fc85f325.png)
+![image](https://user-images.githubusercontent.com/17654421/63959925-9d505d80-ca8d-11e9-9251-0dac84465997.png)
 
 May be used in corporate environment : Drop software into a network share, anybody will be able to add and remove bookmark.
 
